@@ -27,14 +27,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <algorithm>
+
 #include "bsp.h"
+#include "diagnostic/diagnostic.h"
 #include "microhal.h"
 #include "ports/nrf51/timer.h"
 
 using namespace microhal;
+using namespace microhal::diagnostic;
 using namespace std::literals::chrono_literals;
 
-nrf51::Timer timer(*NRF_TIMER0);
+nrf51::Timer timer(*NRF_TIMER1);
+uint8_t ledPattern = 1;
 
 class RGB {
  public:
@@ -125,13 +130,12 @@ void pattern3_init() {
     timer.bitMode(nrf51::Timer::BitMode::Width_32Bits);
     timer.mode(nrf51::Timer::Mode::Timer);
 
-    timer.enableInterrupt();
+    timer.enableInterrupt(3);
 
     timer.captureCompare[0].enableInterrupt();
     timer.captureCompare[0].enableTimerClearOnCompare();
     timer.captureCompare[0].value(50);
     timer.captureCompare[0].connectInterrupt(timerInterrupt);
-    timer.start();
 }
 void pattern3() {
     static uint8_t j = 0;
@@ -144,19 +148,82 @@ void pattern3() {
     if (j == 3) j = 0;
 }
 
-int main(void) {
-    GPIO button(button_pin, GPIO::Direction::Input);
+void bleInit();
+void power_manage();
 
+int main(void) {
+    bsp::init();
+
+    // GPIO button(button_pin, GPIO::Direction::Input);
     offAllLeds();
 
-    // pattern3_init();
-    while (1) {
-        std::this_thread::sleep_for(20ms);
+    auto configureSerialPort = [](SerialPort &serial) {
+        serial.open(SerialPort::ReadWrite);
+        serial.setBaudRate(SerialPort::Baud38400);
+        serial.setDataBits(SerialPort::Data8);
+        serial.setStopBits(SerialPort::OneStop);
+        serial.setParity(SerialPort::NoParity);
+    };
 
-        // pattern1();
-        pattern2();
-        //  pattern3();
+    configureSerialPort(bsp::serialPort);
+    diagChannel.setOutputDevice(bsp::serialPort);
+
+    diagChannel << MICROHAL_DEBUG << "Snowflake demo started" << endl;
+    bleInit();
+    pattern3_init();
+
+    // Enter main loop.
+    for (;;) {
+        //        power_manage();
+
+        switch (ledPattern) {
+            case 0:  // off
+                offAllLeds();
+                power_manage();
+                break;
+            case 1:
+                pattern1();
+                std::this_thread::sleep_for(20ms);
+                break;
+            case 2:
+                pattern2();
+                std::this_thread::sleep_for(20ms);
+                break;
+            case 3:
+                pattern3();
+                std::this_thread::sleep_for(1ms);
+                break;
+        }
     }
 
     return 0;
+}
+
+void bleUartHandler(uint8_t *p_data, uint16_t length) {
+    static uint8_t data[256];
+    std::copy_n(p_data, length, data);
+    data[length + 1] = 0;
+
+    diagChannel << MICROHAL_DEBUG << "From nus_data_handler: " << (const char *)data;
+
+    if (p_data[0] == 0) {
+        diagChannel << MICROHAL_DEBUG << "Entering sleep mode.";
+        ledPattern = 0;
+        timer.stop();
+    }
+    if (p_data[0] == 1) {
+        diagChannel << MICROHAL_DEBUG << "Setting LED pattern to 1.";
+        ledPattern = 1;
+        timer.stop();
+    }
+    if (p_data[0] == 2) {
+        diagChannel << MICROHAL_DEBUG << "Setting LED pattern to 2.";
+        ledPattern = 2;
+        timer.stop();
+    }
+    if (p_data[0] == 3) {
+        diagChannel << MICROHAL_DEBUG << "Setting LED pattern to 3.";
+        timer.start();
+        ledPattern = 3;
+    }
 }
