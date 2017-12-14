@@ -1,4 +1,5 @@
 */.settings
 *.hex
+!*softdevice.hex
 *.elf
 *.bin
