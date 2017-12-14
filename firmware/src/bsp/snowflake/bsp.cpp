@@ -32,4 +32,18 @@
  */
 #include "bsp.h"
 
-void bspInit() {}
+using namespace microhal;
+using namespace nrf51;
+
+namespace bsp {
+void init() {
+    IOManager::routeSerial<1, Txd, nrf51::GPIO::P0, 27>();
+    // IOManager::routeSerial<1, Rxd, nrf51::GPIO::P0, 11>();
+}
+}  // namespace bsp
+
+uint64_t SysTick_time = 0;
+
+// extern "C" void SysTick_Handler(void) {
+//    SysTick_time++;
+//}

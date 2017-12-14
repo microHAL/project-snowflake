@@ -30,6 +30,10 @@
 #ifndef _MICROHAL_MICROHALPORTCONFIG_NRF51_H_
 #define _MICROHAL_MICROHALPORTCONFIG_NRF51_H_
 
+#include <cstdint>
+
+namespace microhal {
+namespace nrf51 {
 //***********************************************************************************************//
 //                                       configure interfaces                                    //
 //***********************************************************************************************//
@@ -39,7 +43,10 @@
 #define MICROHAL_USE_SERIAL_PORT1_INTERRUPT  // available settings are MICROHAL_USE_SERIAL_PORTx_POLLING
 //						 MICROHAL_USE_SERIAL_PORTx_INTERRUPT
 //						 MICROHAL_USE_SERIAL_PORTx_DMA
+constexpr uint32_t serialPort1_priority = 3;
 #define MICROHAL_SERIAL_PORT1_TX_BUFFER_SIZE 1024
 #define MICROHAL_SERIAL_PORT1_RX_BUFFER_SIZE 128
+}  // namespace nrf51
+}  // namespace microhal
 
 #endif  // _MICROHAL_MICROHALPORTCONFIG_NRF51_H_

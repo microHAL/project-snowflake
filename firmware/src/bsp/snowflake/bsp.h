@@ -61,6 +61,7 @@ constexpr microhal::GPIO::IOPin ledFB_pin(microhal::nrf51::GPIO::Port::P0, 13);
 constexpr microhal::GPIO::IOPin button_pin(microhal::nrf51::GPIO::Port::P0, 27);
 
 namespace bsp {
+void init();
 
 static microhal::SerialPort &serialPort = microhal::nrf51::SerialPort::Serial1;
 
