@@ -5,10 +5,10 @@
  * @brief
  *
  * @authors    Pawel Okas
- * created on: 16-11-2017
- * last modification: 16-11-2017
+ * created on: 14-12-2017
+ * last modification: 14-12-2017
  *
- * @copyright Copyright (c) 2016, Pawel Okas
+ * @copyright Copyright (c) 2017, Pawel Okas
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,19 +27,9 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _MICROHAL_MICROHALPORTCONFIG_NRF51_H_
-#define _MICROHAL_MICROHALPORTCONFIG_NRF51_H_
+/* **************************************************************************************************************************************************
+ * INCLUDES
+ */
+#include "bsp.h"
 
-//***********************************************************************************************//
-//                                       configure interfaces                                    //
-//***********************************************************************************************//
-//***********************************************************************************************//
-//                                    Serial Port configurations                                 //
-//***********************************************************************************************//
-#define MICROHAL_USE_SERIAL_PORT1_INTERRUPT  // available settings are MICROHAL_USE_SERIAL_PORTx_POLLING
-//						 MICROHAL_USE_SERIAL_PORTx_INTERRUPT
-//						 MICROHAL_USE_SERIAL_PORTx_DMA
-#define MICROHAL_SERIAL_PORT1_TX_BUFFER_SIZE 1024
-#define MICROHAL_SERIAL_PORT1_RX_BUFFER_SIZE 128
-
-#endif  // _MICROHAL_MICROHALPORTCONFIG_NRF51_H_
+void bspInit() {}

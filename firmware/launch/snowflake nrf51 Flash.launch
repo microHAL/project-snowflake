@@ -19,7 +19,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_START_MODE" value="run"/>
 <booleanAttribute key="org.eclipse.cdt.launch.DEBUGGER_STOP_AT_MAIN" value="true"/>
 <stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_STOP_AT_MAIN_SYMBOL" value="main"/>
-<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_ARGUMENTS" value="-f interface/stlink-v2-1.cfg&#10;-f target/nrf51.cfg&#10;-c &quot;init&quot;&#10;-c &quot;reset halt&quot; &#10;-c &quot;flash write_image erase nrf51/snowflake.elf&quot;&#10;-c &quot;verify_image nrf51/snowflake.elf&quot;&#10;-c &quot;reset run&quot;&#10;-c &quot;shutdown&quot;"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_ARGUMENTS" value="-f interface/stlink-v2-1.cfg&#10;-f target/nrf51.cfg&#10;-c &quot;init&quot;&#10;-c &quot;reset halt&quot; &#10;-c &quot;flash write_image erase nrf51/snowflake.hex&quot;&#10;-c &quot;verify_image nrf51/snowflake.hex&quot;&#10;-c &quot;reset run&quot;&#10;-c &quot;shutdown&quot;"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="${openocd_path}/${openocd_executable}"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="snowflake"/>
 <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>

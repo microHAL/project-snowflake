@@ -1,0 +1,4 @@
+*/.settings
+*.hex
+*.elf
+*.bin

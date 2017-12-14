@@ -1,6 +1,6 @@
 /**
  * @license    BSD 3-Clause
- * @copyright  microHAL
+ * @copyright  Pawel Okas
  * @version    $Id$
  * @brief
  *
@@ -60,4 +60,9 @@ constexpr microhal::GPIO::IOPin ledFB_pin(microhal::nrf51::GPIO::Port::P0, 13);
 
 constexpr microhal::GPIO::IOPin button_pin(microhal::nrf51::GPIO::Port::P0, 27);
 
+namespace bsp {
+
+static microhal::SerialPort &serialPort = microhal::nrf51::SerialPort::Serial1;
+
+}  // namespace bsp
 #endif  // _MICROHAL_BSP_H_
