@@ -28,12 +28,12 @@
 		<link>
 			<name>src/gsl</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/microhal/third-party/gsl</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/microhal/third-party/gsl</locationURI>
 		</link>
 		<link>
 			<name>src/microhal</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/microhal/microhal</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/microhal/microhal</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
