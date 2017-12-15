@@ -1,4 +1,4 @@
-*/.settings
+**/.settings
 *.hex
 !*softdevice.hex
 *.elf
