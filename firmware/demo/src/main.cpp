@@ -32,6 +32,7 @@
 #include "bsp.h"
 #include "diagnostic/diagnostic.h"
 #include "microhal.h"
+#include "ports/nrf51/rtc_nrf51.h"
 #include "ports/nrf51/timer.h"
 
 using namespace microhal;
@@ -151,6 +152,26 @@ void pattern3() {
 void bleInit();
 void power_manage();
 
+void setTime(nrf51::RTC &rtc) {
+    // -------------------- setting time
+    // this should be 01.01.2018
+    std::tm timeToSet;
+    timeToSet.tm_sec = 0;
+    timeToSet.tm_min = 0;
+    timeToSet.tm_hour = 0;
+    timeToSet.tm_mday = 1;
+    timeToSet.tm_mon = 0;
+    timeToSet.tm_year = 2018 - 1900;
+    timeToSet.tm_isdst = -1;
+
+    std::time_t basetime = std::mktime(&timeToSet);
+
+    nrf51::RTC::time_point time(nrf51::RTC::from_time_t(basetime));
+    rtc.setTime(time);
+}
+
+bool showTime = false;
+
 int main(void) {
     bsp::init();
 
@@ -172,9 +193,23 @@ int main(void) {
     bleInit();
     pattern3_init();
 
-    // Enter main loop.
-    for (;;) {
-        //        power_manage();
+    // nrf51::ClockManager::LFCLK::source(nrf51::ClockManager::LFCLK::Source::Xtal);
+    nrf51::ClockManager::LFCLK::source(nrf51::ClockManager::LFCLK::Source::RC);
+    nrf51::ClockManager::LFCLK::enable();
+    nrf51::RTC rtc(*NRF_RTC1);
+    rtc.prescaler(0);
+    rtc.start();
+    rtc.enableInterrupt(nrf51::RTC::Interrupt::Overflow);
+    rtc.enableModuleInterrupts(3);
+
+    setTime(rtc);
+
+    while (1) {
+        if (showTime) {
+            showTime = false;
+            std::time_t t = nrf51::RTC::to_time_t(rtc.now());
+            diagChannel << lock << Debug << "Current RTC time is: " << std::ctime(&t) << endl << endl << unlock;
+        }
 
         switch (ledPattern) {
             case 0:  // off
@@ -206,24 +241,28 @@ void bleUartHandler(uint8_t *p_data, uint16_t length) {
 
     diagChannel << MICROHAL_DEBUG << "From nus_data_handler: " << (const char *)data;
 
-    if (p_data[0] == 0) {
+    if (p_data[0] == 0 || p_data[0] == 'a') {
         diagChannel << MICROHAL_DEBUG << "Entering sleep mode.";
         ledPattern = 0;
         timer.stop();
     }
-    if (p_data[0] == 1) {
+    if (p_data[0] == 1 || p_data[0] == 'b') {
         diagChannel << MICROHAL_DEBUG << "Setting LED pattern to 1.";
         ledPattern = 1;
         timer.stop();
     }
-    if (p_data[0] == 2) {
+    if (p_data[0] == 2 || p_data[0] == 'c') {
         diagChannel << MICROHAL_DEBUG << "Setting LED pattern to 2.";
         ledPattern = 2;
         timer.stop();
     }
-    if (p_data[0] == 3) {
+    if (p_data[0] == 3 || p_data[0] == 'd') {
         diagChannel << MICROHAL_DEBUG << "Setting LED pattern to 3.";
         timer.start();
         ledPattern = 3;
+    }
+    if (p_data[0] == 4 || p_data[0] == 't') {
+        diagChannel << MICROHAL_DEBUG << "Show time requested.";
+        showTime = true;
     }
 }
